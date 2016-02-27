@@ -1,0 +1,1 @@
+var gameObject = new GameObject();

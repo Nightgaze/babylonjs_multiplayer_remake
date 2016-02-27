@@ -1,0 +1,39 @@
+doctype html
+html
+    head
+        block head
+            link(href='stylesheets/style.css', rel='stylesheet')
+            link(href='stylesheets/bootstrap.min.css', rel='stylesheet')
+            script(src='javascripts/jquery.min.js')
+            meta(name: 'viewport', content: 'width=device-width', initial-scale: '1')
+            if  gameOn
+                meta(http-equiv: 'Content-type', charset: 'utf-8')
+                script(src='/socket.io/socket.io.js')
+                script(src='javascripts/dat.gui.min.js')
+                script(src='javascripts/babylon.2.2.js')
+                script(src='javascripts/class/socket.js')
+                script(src='javascripts/class/prop.js')
+                script(src='javascripts/class/modelselector.js')
+                script(src='javascripts/class/player.js')
+                script(src='javascripts/class/list.js')
+                script(src='javascripts/class/object3d.js')
+                script(src='javascripts/class/gameObject.js')
+
+                
+
+    body
+        block body
+            .container
+                .row 
+                    .col-md-12#header Nightspirit's Babylon.js Multiplayer Demo
+                .row.menu
+                   
+                .row
+                     if !gameOn
+                         .col-md-12 BLABLABLALBLABALBAL
+                     else
+                         .col-md-12
+                             canvas#renderCanvas
+                         button.col-sm-2.btn.btn-sm.btn-primary(onclick="gameObject.connect()") Connect
+                         script(src='javascripts/class/main.js')
+                    

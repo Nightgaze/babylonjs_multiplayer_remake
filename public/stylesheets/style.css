@@ -1,0 +1,35 @@
+
+#renderCanvas {
+    width: 100%;
+    height: 100%;
+}
+a {
+  color: darkblue;
+}
+
+.container {
+    background-color: aquamarine;
+    padding: 0px 10px 90px 10px;
+    box-shadow: 0px 0px 20px;
+}
+#header {
+    background-color: steelblue;
+    font-size: 30px;
+    padding:10px 0px 25px 90px;
+    font-family: fantasy;
+    box-shadow: 0px 0px 20px;
+}
+
+.menu {
+    font-family: Arial;
+}
+
+.chat {
+    background-color: darkgrey;
+  
+}
+
+.padding {
+    padding: 50px;
+
+}
