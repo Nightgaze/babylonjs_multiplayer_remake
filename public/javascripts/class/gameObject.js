@@ -27,7 +27,7 @@ function GameObject()
         scene.collisionsEnabled = true;
         scene.debugLayer.shouldDisplayAxis = true;*/
 
-        //scene.debugLayer.show();
+        scene.debugLayer.show();
         camera = new BABYLON.ArcRotateCamera("Camera", 0.5, 1.4, 300, BABYLON.Vector3.Zero(), scene);
         camera.attachControl(canvas, false);
         camera.keysLeft = [39];

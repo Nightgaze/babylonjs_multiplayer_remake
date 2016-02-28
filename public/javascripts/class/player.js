@@ -1,6 +1,6 @@
 
 function Player(playerData, game, mine)
-{
+{   console.log('new player' + playerData._id);
     this._id = playerData._id
     var position = new BABYLON.Vector3(playerData.position.x, playerData.position.y, playerData.position.z);
     var tranSpeed = playerData.tranSpeed;

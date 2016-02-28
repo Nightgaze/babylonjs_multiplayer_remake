@@ -20,12 +20,13 @@ function Socket(game){
         catch(ex){console.log(ex) }
     });
 
-    sock.on('load players', function(data){
+    sock.on('load players', function(data){console.log('load players received')
         try 
         {
             data.rows.forEach(function (doc){
-                doc = doc.value;
-                playerList.Push(new Player(doc, game, true));       //FIX THAT TRUE
+                doc = doc.value; 
+                if (!playerList.Search(doc._id))
+                    playerList.Push(new Player(doc, game, true));       //FIX THAT TRUE
 
             });
         }catch (ex){console.log(ex.message)}

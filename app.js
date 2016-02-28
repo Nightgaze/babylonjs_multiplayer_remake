@@ -70,12 +70,12 @@ io.on('connection', function (socket){
      });
 
     //send event to load all players
-    players.view('design', 'get players', function (err, res)
+    /*players.view('design', 'get players', function (err, res)
     {
         if (err) console.log(err.message)
          if (res.rows.length != 0)
            io.sockets.emit('load players', res);
-    });
+    });*/
 
 
     //get props:
