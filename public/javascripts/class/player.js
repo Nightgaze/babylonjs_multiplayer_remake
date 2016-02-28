@@ -2,7 +2,7 @@
 function Player(name, game, position, mine)
 {
     var tranSpeed = 2;
-    var flySpeed = 2;
+    var flySpeed = 3;
     var rotSpeed = 1.2;
     var canFly = true;
     var isMoving = false;
@@ -27,8 +27,9 @@ function Player(name, game, position, mine)
     }
     var forwardP = function(){
             var speed;
-            if (isFlying) speed = flySpeed; //* (Math.abs(camera.beta - 3.14) * 3);
+            if (isFlying) speed = flySpeed* (Math.abs(camera.beta - 3.14) * 3);
                 else speed = tranSpeed;
+            console.log(speed);
             res = public.mesh.calcMovePOV(0, 0, 1);
             position.x += res.x * speed * scene.getAnimationRatio();
             position.y += res.y * speed * scene.getAnimationRatio();
@@ -38,7 +39,7 @@ function Player(name, game, position, mine)
 
         var forwardN = function(){
             var speed;
-            if (isFlying) speed = flySpeed ;//* camera.beta;
+            if (isFlying) speed = flySpeed * camera.beta;
                 else speed = tranSpeed;
             res = public.mesh.calcMovePOV(0, 0, -1);
             position.x += res.x * speed * scene.getAnimationRatio();

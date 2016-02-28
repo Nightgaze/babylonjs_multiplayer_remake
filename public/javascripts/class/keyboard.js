@@ -16,7 +16,7 @@
             case 87:
                 if (!keyW)      //W
                 {
-                    //player.W();
+                    player.W();
                     keyW = true;
                 }
                 break;
@@ -24,7 +24,7 @@
             case 83:
                 if (!keyS)      //S
                 {
-                    //player.S();
+                    player.S();
                     keyS = true;
                 }
                 break;    
@@ -40,7 +40,7 @@
             case 87:        //W
                 if(keyW)
                 {
-                    //player.WC();
+                    player.WC();
                     keyW = false;
             
                 }
@@ -49,7 +49,7 @@
             case 83:
                 if (keyS)   //S
                 {
-                    //player.SC();
+                    player.SC();
                     keyS = false;
                 }
                 break;

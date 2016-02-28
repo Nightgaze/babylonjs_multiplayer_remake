@@ -11,8 +11,8 @@ function Player(game, position)
     this.manaReg = 2000;
     this.isFlying = true;
     this.canFly = false;
-    var tranSpeed = 5;
-    var flySpeed = 1.2;
+    var tranSpeed = 10;
+    var flySpeed = 10;
     var rotSpeed = 0.02;
     
     var scene = game.getScene();
