@@ -38,6 +38,7 @@ http://localhost/game
 
 ## Documentation I used:
 [Fast Paced Multiplayer by Gabriel Gambetta]
+[Real Time Multiplayer In HTML5]
 
 ## Version
 0.0.0
@@ -56,6 +57,7 @@ http://localhost/game
    [Express]: <http://expressjs.com>
    [socket.io]: <https://socket.io>
    [Fast Paced Multiplayer by Gabriel Gambetta]: <http://www.gabrielgambetta.com/fast_paced_multiplayer.html>
+   [Real Time Multiplayer In HTML5]: <http://buildnewgames.com/real-time-multiplayer>
 
 
 
