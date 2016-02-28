@@ -21,28 +21,7 @@ var nano = require('nano')(DATABASE);
 var props = nano.use('props');
 var players = nano.use('players');
 
-//IT'S ELEGANT BUT INEFFICIENT, MOVE THIS GARBAGE AND STOP WAITING FOR DB'S ASS, DO IT RIGHT AWAY
-var propsFeed = props.follow({include_docs:true, feed: "longpoll" ,since: "now"});
-propsFeed.on('change', function (change) { //console.log(change);
-    if (change.doc._deleted) ;
-       // io.sockets.emit('remove props', change.doc);
-    else if (change.doc.update) 
-        io.sockets.emit('update props', change.doc);
-    else if(change.doc.create)io.sockets.emit('create props', change.doc);
-});
-propsFeed.follow();
 
-var playersFeed = players.follow({include_docs: true, feed: "longpoll", since: "now"});
-playersFeed.on('change', function(change){
-    //distinguish
-    players.view('design', 'get players', function(err, res){
-        if (err) console.log(err.message)
-        else if (res.rows.length != 0)
-            io.sockets.emit('load players', res);
-    });
-
-})
-playersFeed.follow();
 
 /*
 feed.on('change', function (change) {
@@ -55,10 +34,9 @@ process.nextTick(function () {
 
 
 
-//SOCKET.IO
-io.on('connection', function (socket){
-    pos = {x: Math.random() * 200, y: 300, z: Math.random() * 200};
-                                    //name, pos, tranSpeed, canFly, flySpeed, rotSpeed, model
+//REAL TIME CODE HERE
+var multiplayer = io.of('/multiplayer').on('connection', function(socket){
+    pos = {x: Math.random() * 200, y: 300, z: Math.random() * 200};                            
     var name = Math.random().toString(36).substring(7);
     var data = new PlayerData(name,  pos,  1.2,       true,    2,       1.2);
     //io.sockets.emit('new player', playerData);
@@ -69,13 +47,10 @@ io.on('connection', function (socket){
             } 
      });
 
-    //send event to load all players
-    /*players.view('design', 'get players', function (err, res)
-    {
-        if (err) console.log(err.message)
-         if (res.rows.length != 0)
-           io.sockets.emit('load players', res);
-    });*/
+});
+
+var util = io.of('/util').on('connection', function (socket){
+    
 
 
     //get props:
@@ -118,6 +93,32 @@ io.on('connection', function (socket){
         });    
     });
 });
+
+//IT'S ELEGANT BUT INEFFICIENT, MOVE THIS GARBAGE AND STOP WAITING FOR DB'S ASS, DO IT RIGHT AWAY
+var propsFeed = props.follow({include_docs:true, feed: "longpoll" ,since: "now"});
+propsFeed.on('change', function (change) { //console.log(change);
+    if (change.doc._deleted) ;
+       // io.sockets.emit('remove props', change.doc);
+    else if (change.doc.update) 
+        util.emit('update props', change.doc);
+    else if(change.doc.create)util.emit('create props', change.doc);
+});
+propsFeed.follow();
+
+var playersFeed = players.follow({include_docs: true, feed: "longpoll", since: "now"});
+playersFeed.on('change', function(change){
+    //distinguish
+    players.view('design', 'get players', function(err, res){
+        if (err) console.log(err.message)
+        else if (res.rows.length != 0)
+            util.emit('load players', res);
+    });
+
+})
+playersFeed.follow();
+
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
