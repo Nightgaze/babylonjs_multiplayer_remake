@@ -22,11 +22,15 @@ function Socket(game){
 
     sock.on('load players', function(data){console.log('load players received')
         try 
-        {
+        {   var mine = true;
             data.rows.forEach(function (doc){
                 doc = doc.value; 
                 if (!playerList.Search(doc._id))
-                    playerList.Push(new Player(doc, game, true));       //FIX THAT TRUE
+                {
+                    var player = new Player(doc, game, mine);           //FIX THAT TRUE
+                    playerList.Push(player);                        
+                    if (mine) var keyboard = new Keyboard(player, game);
+                }
 
             });
         }catch (ex){console.log(ex.message)}

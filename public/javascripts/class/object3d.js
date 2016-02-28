@@ -25,11 +25,11 @@ function Object3D(game, position, model){
             {
                 if (public.mesh.position.y <= pickInfo.pickedPoint.y){
                     isFlying = false;
-                    position.y = pickInfo.pickedPoint.y + public.meshHeight/2;  
+                    position.y = pickInfo.pickedPoint.y; 
                 }
             }
             else {
-                position.y = pickInfo.pickedPoint.y + public.meshHeight/2;
+                position.y = pickInfo.pickedPoint.y;
             }
         }               
     }    

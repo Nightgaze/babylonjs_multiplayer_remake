@@ -87,8 +87,9 @@ function GameObject()
     public.connect = function (){
         if (!isConnected){                //name, pos, tranSpeed, canFly, flySpeed, rotSpeed, model
             //var playerData = new PlayerData("L",  pos,  1.2,       true,    2,       1.2);
-
-            //playerList.Push(new Player(playerData, public, true));
+            //var me = new Player(playerData, public, true)
+            //playerList.Push(me);
+            //var keyboard = new Keyboard(public, game);
             isConnected = true;
         }
         else console.log('You are already connected.');
@@ -121,6 +122,7 @@ function GameObject()
     engine.runRenderLoop(render);
 
     var socket = new Socket(public);
+
     var modelSelector = new ModelSelector(public, socket);
     return public;
  }
