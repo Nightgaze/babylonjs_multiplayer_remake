@@ -8,6 +8,7 @@ function GameObject()
 
     var props = new List();
     pos = new BABYLON.Vector3(0, 300, 0);
+    
 
     var createScene = function()
     {
@@ -38,7 +39,7 @@ function GameObject()
     
     var loadModels = function(){
 
-        models.push(new BABYLON.Mesh.CreateSphere('sphere', 20, 20, scene, true));
+        models.push(new BABYLON.Mesh.CreateSphere('sphere', 12, 20, scene, true));
         models.push(new BABYLON.Mesh.CreateBox('box', 20, scene, true));
         models.push(new BABYLON.Mesh.CreateCylinder('cylinder', 100, 40, 40, 10, 10, scene, true));
 
@@ -87,10 +88,13 @@ function GameObject()
     
     public.connect = function (){
         if (!isConnected){
-        playerList.Push(new Player(public));
+        playerList.Push(new Player("L", public, pos));
         isConnected = true;
         }
         else console.log('You are already connected.');
+    }
+    public.getSocket = function(){
+        return socket;    
     }
     public.getScene = function(){
         return scene;   
@@ -112,7 +116,9 @@ function GameObject()
     }
     setupGame();
     engine.runRenderLoop(render);
-    var o = new Object3D(public, new BABYLON.Vector3(200, 200, 200));
+
+    var socket = new Socket(public);
+    var modelSelector = new ModelSelector(public, socket);
     return public;
  }
  

@@ -23,11 +23,11 @@ var props = nano.use('props');
 
 var propsFeed = props.follow({include_docs:true, feed: "longpoll" ,since: "now"});
 propsFeed.on('change', function (change) {
-    if (change.doc._deleted) {console.log('delete');
-        io.sockets.emit('remove props', change.doc);}
-    else if (change.doc.update) {console.log('update');
-        io.sockets.emit('update props', change.doc);}
-    else if(change.doc.create){io.sockets.emit('create props', change.doc); console.log('create')}
+    if (change.doc._deleted) 
+        io.sockets.emit('remove props', change.doc);
+    else if (change.doc.update) 
+        io.sockets.emit('update props', change.doc);
+    else if(change.doc.create)io.sockets.emit('create props', change.doc);
 });
 propsFeed.follow();
 

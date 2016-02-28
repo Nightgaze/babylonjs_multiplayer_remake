@@ -4,11 +4,12 @@ function Object3D(game, position, model){
     var public = {};
     var scene = game.getScene();
     var ground = game.getGround();
-    
+    public.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
+
     try {
-    mesh = scene.getMeshByName(doc.model).clone();
-    }catch(ex){mesh = scene.getMeshByName("sphere").clone()}
-    finally{mesh.position = position}
+    public.mesh = scene.getMeshByName(doc.model).clone();
+    }catch(ex){public.mesh = scene.getMeshByName("sphere").clone()}
+    finally{public.mesh.position = position}
     
 
     public.TerrainRaycast = function(){   
@@ -22,15 +23,16 @@ function Object3D(game, position, model){
         {
             if (isFlying)
             {
-                if (mesh.position.y <= pickInfo.pickedPoint.y){
+                if (public.mesh.position.y <= pickInfo.pickedPoint.y){
                     isFlying = false;
-                    position.y = pickInfo.pickedPoint.y + meshHeight/2;  
+                    position.y = pickInfo.pickedPoint.y + public.meshHeight/2;  
                 }
             }
             else {
-                position.y = pickInfo.pickedPoint.y + meshHeight/2;
+                position.y = pickInfo.pickedPoint.y + public.meshHeight/2;
             }
         }               
     }    
-    public.TerrainRaycast();
+
+    return public;
 }
