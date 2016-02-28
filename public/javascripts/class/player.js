@@ -1,6 +1,7 @@
 
 function Player(playerData, game, mine)
 {
+    this._id = playerData._id
     var position = new BABYLON.Vector3(playerData.position.x, playerData.position.y, playerData.position.z);
     var tranSpeed = playerData.tranSpeed;
     var flySpeed = playerData.flySpeed;

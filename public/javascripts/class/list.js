@@ -7,23 +7,31 @@ function List(){
             return root;
         }
         public.Search = function (name){
-            var p = root;
-            while ((p._id != name) && (p.next != null)) {
-                p = p.next;
+            if (root){
+                var p = root;
+                while ((p._id != name) && (p.next != null)) {
+                    p = p.next;
+                }
+                if (p._id == name)
+                    return p;
+                else return false;
             }
-            if (p._id == name)
-                return p;
             else return false;
         }
         public.Push = function (node){
             if (!public.Search(node._id))
-                if (!root) {root=node; cursor = root;}
+                if (!root) {
+                    root=node;
+                    cursor = root;
+                    return true;
+                    }
                 else {
                     cursor.next = node;
                     cursor = cursor.next;
                     cursor.next = null;
+                    return true;
                 }
-            else console.log("Items is already in list!");
+            else return false;
         }
         public.Delete = function (name){
             var p = root;

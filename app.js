@@ -31,14 +31,14 @@ propsFeed.on('change', function (change) { //console.log(change);
     else if(change.doc.create)io.sockets.emit('create props', change.doc);
 });
 propsFeed.follow();
-
+var i=0;
 var playersFeed = players.follow({include_docs: true, feed: "longpoll", since: "now"});
-playersFeed.on('change', function(change){console.log('change');
+playersFeed.on('change', function(change){
     //distinguish
     players.view('design', 'get players', function(err, res){
         if (err) console.log(err.message)
         else if (res.rows.length != 0)
-            {io.sockets.emit('load players', playerData);  console.log('sent it fam');}
+           { io.sockets.emit('load players', res); console.log(i++);}
     });
 
 })
@@ -93,6 +93,7 @@ io.on('connection', function (socket){
         
     });*/
 
+ 
     socket.on('update props', function(data){
         props.insert(data, function(err, body){
             if (err) console.log(err.message);  
