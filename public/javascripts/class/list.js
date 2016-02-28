@@ -19,19 +19,17 @@ function List(){
             else return false;
         }
         public.Push = function (node){
-            if (!public.Search(node._id))
-                if (!root) {
-                    root=node;
-                    cursor = root;
-                    return true;
-                    }
-                else {
-                    cursor.next = node;
-                    cursor = cursor.next;
-                    cursor.next = null;
-                    return true;
+            if (!root) {
+                root=node;
+                cursor = root;
+                return true;
                 }
-            else return false;
+            else {
+                cursor.next = node;
+                cursor = cursor.next;
+                cursor.next = null;
+                return true;
+            }
         }
         public.Delete = function (name){
             var p = root;

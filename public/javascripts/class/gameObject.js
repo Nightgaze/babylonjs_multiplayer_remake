@@ -4,8 +4,8 @@ function GameObject()
     var isConnected = false;
     var canvas, engine, scene, camera,
     light,
-    models = [], materials = [];
-
+    models = [], materials = [], socket;
+    var name
     var props = new List(), playerList = new List();
     
 
@@ -72,6 +72,8 @@ function GameObject()
     var setupGame = function (){
         scene = createScene();
         loadModels();
+        
+        var modelSelector = new ModelSelector(public, socket);
         scene.executeWhenReady(public.connect);
     }
 
@@ -85,10 +87,9 @@ function GameObject()
    
     
     public.connect = function (){
-        if (!isConnected){                //name, pos, tranSpeed, canFly, flySpeed, rotSpeed, model
-            //var playerData = new PlayerData("L",  pos,  1.2,       true,    2,       1.2);
-
-            //playerList.Push(new Player(playerData, public, true));
+        if (!isConnected){
+            var name = Math.random().toString(36).substring(7);
+            socket = new Socket(name, public);                
             isConnected = true;
         }
         else console.log('You are already connected.');
@@ -120,8 +121,7 @@ function GameObject()
     setupGame();
     engine.runRenderLoop(render);
 
-    var socket = new Socket(public);
-    var modelSelector = new ModelSelector(public, socket);
+   
     return public;
  }
  

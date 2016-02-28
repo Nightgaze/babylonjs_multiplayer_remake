@@ -24,7 +24,9 @@
     <Compile Include="app.js" />
     <Compile Include="mod\db.js" />
     <Compile Include="mod\io.js" />
+    <Compile Include="public\javascripts\class\keyboard.js" />
     <Compile Include="public\javascripts\class\modelselector.js" />
+    <Compile Include="public\javascripts\class\playerdata.js" />
     <Compile Include="routes\index.js" />
     <Compile Include="routes\users.js" />
     <Content Include="views\error.jade" />

@@ -31,14 +31,14 @@ propsFeed.on('change', function (change) { //console.log(change);
     else if(change.doc.create)io.sockets.emit('create props', change.doc);
 });
 propsFeed.follow();
-var i=0;
+
 var playersFeed = players.follow({include_docs: true, feed: "longpoll", since: "now"});
-playersFeed.on('change', function(change){
+playersFeed.on('change', function(change){//console.log(change); console.log('\n\n')
     //distinguish
     players.view('design', 'get players', function(err, res){
         if (err) console.log(err.message)
         else if (res.rows.length != 0)
-           { io.sockets.emit('load players', res); console.log(i++);}
+            io.sockets.emit('load players', res);
     });
 
 })
@@ -59,18 +59,17 @@ process.nextTick(function () {
 io.on('connection', function (socket){
     pos = {x: Math.random() * 200, y: 300, z: Math.random() * 200};
                                     //name, pos, tranSpeed, canFly, flySpeed, rotSpeed, model
-    var name = Math.random().toString(36).substring(7);
-    var data = new PlayerData(name,  pos,  1.2,       true,    2,       1.2);
+    var data = new PlayerData(socket.name,  pos,  1.2,       true,    2,       1.2);
     //io.sockets.emit('new player', playerData);
     players.insert(data, data.name, function (err, body, header){
             if (err){
                 console.log(err.message);
                 return;
-            } 
+            } else console.log(body);
      });
 
-    //send event to load all players
-    /*players.view('design', 'get players', function (err, res)
+    /*send event to load all players
+    players.view('design', 'get players', function (err, res)
     {
         if (err) console.log(err.message)
          if (res.rows.length != 0)

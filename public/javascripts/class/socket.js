@@ -1,12 +1,14 @@
-function Socket(game){
+function Socket(name, game){
+    var THIS = this;
     var sock;
     sock = io.connect();
-
+      
+    //sock.name = name;
     var scene = game.getScene();
     var props = game.getProps();
     var playerList = game.getPlayerList();
     
-    
+
     sock.on('load props', function (data)
     {
         try 
@@ -20,18 +22,22 @@ function Socket(game){
         catch(ex){console.log(ex) }
     });
 
-    sock.on('load players', function(data){console.log('load players received')
-        try 
-        {
+    sock.on('load players', function(data){
+        //try 
+        //{   
             data.rows.forEach(function (doc){
                 doc = doc.value; 
+                var mine = true;
                 if (!playerList.Search(doc._id))
-                    playerList.Push(new Player(doc, game, true));       //FIX THAT TRUE
-
+                    {   console.log(name + 'comparat cu ' + doc._id)
+                        if (name == doc._id) {mine = true; console.log('MORENA WOOP');}
+                        playerList.Push(new Player(doc, game, mine));       //FIX THAT TRUE
+                    }
+                else console.log('fecal')
             });
-        }catch (ex){console.log(ex.message)}
+        //}catch (ex){console.log(ex.message)}
     });
-
+    
     sock.on('create props', function(data){
         props.Push(new Prop(data, scene));
     });
@@ -55,10 +61,10 @@ function Socket(game){
         test: function (){
             return 'test';
         },
-        emit: function(event, data){
+        emit: function(event, data){        //GET THIS OUT OF HERE, IT'S NOT SAFE
             sock.emit(event, data);
         },
-        on: function(event, f){
+        on: function(event, f){             //AND THIS
             sock.on(event, f);
         }
    
