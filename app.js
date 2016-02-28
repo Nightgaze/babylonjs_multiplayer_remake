@@ -23,8 +23,11 @@ var props = nano.use('props');
 
 var propsFeed = props.follow({include_docs:true, feed: "longpoll" ,since: "now"});
 propsFeed.on('change', function (change) {
-    //console.log(change);
-  io.sockets.emit('update props', change.doc);
+    if (change.doc._deleted) {console.log('delete');
+        io.sockets.emit('remove props', change.doc);}
+    else if (change.doc.update) {console.log('update');
+        io.sockets.emit('update props', change.doc);}
+    else if(change.doc.create){io.sockets.emit('create props', change.doc); console.log('create')}
 });
 propsFeed.follow();
 
@@ -59,41 +62,26 @@ io.on('connection', function (socket){
         
     });*/
 
-  
-
     socket.on('update props', function(data){
-        if (!data.update)
-        {
-            var d = new Date();
-            props.insert(data, d.getTime().toString(), function (err, body, header)
-             {
-                if (err)
-                {
-                    console.log(err.message);
-                    return;
-                }
-                console.log('new');
-            });
-        }
-        else 
-            props.insert(data, function(err, body){
-                
-                //console.log(data);  
-            }); 
-           
-
-
-
-    });
-    socket.on('delete prop', function(data){
-       props.destroy(data, data._rev, function(err, body){;
-       });
-       console.log(data); 
+        props.insert(data, function(err, body){
+            if (err) console.log(err.message);    
+        });
     });
 
-    socket.on('remove prop', function(data){
+    socket.on('create props', function(data){
+        var d = new Date();
+        props.insert(data, d.getTime().toString(), function (err, body, header){
+            if (err){
+                console.log(err.message);
+                return;
+            } 
+         });
+     });
+       
+
+    socket.on('remove props', function(data){
         props.destroy(data._id, data._rev, function(err, body){
-           if (!err) console.log(body); 
+           if (err) console.log(err.message);
         });    
     });
 });

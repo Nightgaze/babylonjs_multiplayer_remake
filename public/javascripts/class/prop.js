@@ -9,18 +9,16 @@ function Prop(doc, scene) {
     public.dispose = function(){mesh.dispose(); Prop.nr--; delete THIS;}
     public.create = function(doc)
     {
-        if (doc.model)
-                mesh = scene.getMeshByName(doc.model).clone();
-        if (doc.material)
-                mesh.material = scene.getMaterialByName(doc.material).clone();
-    }
-    public.update = function(doc){
+        if (doc.model) mesh = scene.getMeshByName(doc.model).clone();
+        if (doc.material) mesh.material = scene.getMaterialByName(doc.material).clone();
         mesh.name = doc.model + Prop.nr;
         THIS.name = mesh.name;
-        
-        mesh._rev = doc._rev;
         mesh._id = doc._id;
         public._id = doc._id;
+    }
+    public.update = function(doc){
+
+        mesh._rev = doc._rev;
         mesh.position.x = doc.position.x;
         mesh.position.y = doc.position.y;
         mesh.position.z = doc.position.z;

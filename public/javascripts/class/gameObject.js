@@ -5,6 +5,7 @@ function GameObject()
     var canvas, engine, scene, camera,
     light,
     playerList, models = [], materials = [];
+
     var props = new List();
     pos = new BABYLON.Vector3(0, 300, 0);
 
@@ -49,7 +50,6 @@ function GameObject()
         redMaterial.diffuseColor = BABYLON.Color3.FromInts(255, 50, 0);
         materials.push(redMaterial);
 
-        sphere = new Object3D("mota", scene, null);
         ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "images/MultiplayerWorld.jpg", 8000, 8000, 50, 0, 1200, scene, false);
         ground.position.y-=400;
         var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
@@ -73,38 +73,30 @@ function GameObject()
         scene = createScene();
         loadModels();
         playerList = new List();
-        scene.executeWhenReady(connect);
-
-        
-
-        
-
+        scene.executeWhenReady(public.connect);
     }
 
-     var connect = function (){
-            if (!isConnected){
-            playerList.Push(new Player(public));
-            isConnected = true;
-            }
-            else console.log('You are already connected.');
-        }
     
-    setupGame();
-
-    
-
-
-    engine.runRenderLoop(function (){
+    var render = function(){
         scene.render();
-    });
+    }
     window.addEventListener("resize", function () { engine.resize(); });
 
     //Public:
    
     
-    public.connect = connect;
+    public.connect = function (){
+        if (!isConnected){
+        playerList.Push(new Player(public));
+        isConnected = true;
+        }
+        else console.log('You are already connected.');
+    }
     public.getScene = function(){
         return scene;   
+    }
+    public.getGround = function(){
+        return ground;    
     }
     public.getEngine = function(){
         return engine;    
@@ -118,7 +110,9 @@ function GameObject()
     public.getProps = function(){
         return props;    
     }
-    
+    setupGame();
+    engine.runRenderLoop(render);
+    var o = new Object3D(public, new BABYLON.Vector3(200, 200, 200));
     return public;
  }
  

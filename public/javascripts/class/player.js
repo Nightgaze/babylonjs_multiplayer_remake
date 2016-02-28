@@ -1,5 +1,5 @@
 
-function Player(game)
+function Player(game, socket)
 {
     var engine = game.getEngine();
 

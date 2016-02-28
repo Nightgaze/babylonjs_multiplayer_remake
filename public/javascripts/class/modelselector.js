@@ -9,14 +9,9 @@
     this.materials = [];
     var engine = game.getEngine();
     var scene = game.getScene();
-    for (var i=0; i<game.getModels().length; i++)               
-        this.models.push(game.getModels()[i].name);
-    for (var i=0; i<game.getMaterials().length; i++)
-        this.materials.push(game.getMaterials()[i].name);
+    for (var i=0; i<game.getModels().length; i++) this.models.push(game.getModels()[i].name);
+    for (var i=0; i<game.getMaterials().length; i++) this.materials.push(game.getMaterials()[i].name);
 
-    //GUI 
-    var gui = new dat.GUI();
-    var transform = gui.addFolder('transform');
     this.scalingX = 1;
     this.scalingY = 1;
     this.scalingZ = 1;
@@ -24,22 +19,27 @@
     this.rotationY = 0.1;
     this.rotationZ = 0.1;
     this.wireframeMode = false;
+    this.Delete = function(){
+        if (THIS.active3D) DeleteInDB(THIS);    
+    }
 
+    var gui = new dat.GUI();
     gui.add(this, 'activeModel', this.models);
     var activeMaterial = gui.add(this, 'activeMaterial', this.materials)
+    gui.add(this, 'Delete');
+    var wireframeMode = gui.add(this, 'wireframeMode');
+    var transform = gui.addFolder('transform');
+
     var scaleX = transform.add(this, 'scalingX', 0.1, 100).listen();
     var scaleY = transform.add(this, 'scalingY', 0.1, 100).listen();
     var scaleZ = transform.add(this, 'scalingZ', 0.1, 100).listen();
     var rotX = transform.add(this, 'rotationX', -Math.PI*2, Math.PI*2).listen();
     var rotY = transform.add(this, 'rotationY', -Math.PI*2, Math.PI*2).listen();
     var rotZ = transform.add(this, 'rotationZ', -Math.PI*2, Math.PI*2).listen();
-    //gui.add(this, 'delete');
-    var wireframeMode = gui.add(this, 'wireframeMode');
+    
 
     activeMaterial.onChange(function(value){
-       if (THIS.active3D)
-           THIS.active3D.material = scene.getMaterialByName(value); 
-
+       if (THIS.active3D) THIS.active3D.material = scene.getMaterialByName(value); 
     });
 
     wireframeMode.onChange(function(value){
@@ -47,48 +47,81 @@
     });
     
     //set socket events related to db actualization:
-    socket.on('get rev', function(data){
+    /*socket.on('get rev', function(data){
         THIS.active3D._rev = data._rev;
-    });
+    });*/
 
+    var UpdateGUI = function(){
+        for (var i in transform.__controllers)
+            transform.__controllers[i].updateDisplay();
+        for (var i in gui.__controllers)
+            gui.__controllers[i].updateDisplay();
+    }
 
     var UpdateDB = function(){
         if (THIS.active3D != null)
         {   
             //socket.emit('request rev',{_id: THIS.active3D._id});
-            
-            var data = new UpdateModelData(THIS, {pickedPoint: {
-                                                            x: THIS.active3D.position.x,
-                                                            y: THIS.active3D.position.y,
-                                                            z: THIS.active3D.position.z
-                                                         }
-            });
+            var data = new UpdateModelData(THIS, {pickedPoint: {x: THIS.active3D.position.x, y: THIS.active3D.position.y,z: THIS.active3D.position.z}});
             socket.emit('update props', data);
         }    
     }
+    var DeleteInDB = function(){
+        var data = new DeleteModelData(THIS); 
+        socket.emit('remove props', data);   
+    }
+
+    var CreateInDB = function(pickInfo){
+        var data = new ModelData(THIS, pickInfo);
+        socket.emit('create props', data);
+    }
     
-    scaleX.onChange(function(value){
+    scaleX.onFinishChange(function(value){
         UpdateDB();    
+    });
+
+    scaleY.onFinishChange(function(value){
+        UpdateDB();    
+    });
+
+    scaleZ.onFinishChange(function(value){
+        UpdateDB();    
+    });
+
+    rotX.onFinishChange(function(value){
+        UpdateDB();    
+    });
+
+    rotY.onFinishChange(function(value){
+        UpdateDB();    
+    });
+
+    rotZ.onFinishChange(function(value){
+        UpdateDB();    
+    });
+
+    scaleX.onChange(function(value){
+        if (THIS.active3D) THIS.active3D.scaling.x = value;    
     });
 
     scaleY.onChange(function(value){
-        UpdateDB();    
+        if (THIS.active3D) THIS.active3D.scaling.y = value;    
     });
 
     scaleZ.onChange(function(value){
-        UpdateDB();    
+        if (THIS.active3D) THIS.active3D.scaling.z = value;    
     });
 
     rotX.onChange(function(value){
-        UpdateDB();    
+        if (THIS.active3D) THIS.active3D.rotation.x = value;    
     });
 
     rotY.onChange(function(value){
-        UpdateDB();    
+        if (THIS.active3D) THIS.active3D.rotation.y = value;    
     });
 
     rotZ.onChange(function(value){
-        UpdateDB();    
+        if (THIS.active3D) THIS.active3D.rotation.z = value;    
     });
 
     
@@ -130,12 +163,7 @@
                 THIS.active3D = null;
             }
             catch(ex){};
-            var data = new ModelData(THIS, pickInfo);
-            socket.emit('update props', data);
-
-            
-
-
+            CreateInDB(pickInfo);
         }
         else if (pickInfo.hit) 
         {
@@ -153,6 +181,9 @@
             THIS.rotationX = THIS.active3D.rotation.x;
             THIS.rotationY = THIS.active3D.rotation.y;
             THIS.rotationZ = THIS.active3D.rotation.z;
+            transform.open();
+            UpdateGUI();
+
 
             startingPoint = getGroundPosition(evt);
 
@@ -176,8 +207,8 @@
         } catch(e){ }
         if (startingPoint) {
             scene.activeCamera.attachControl(canvas, true);
+             UpdateDB();
             startingPoint = null;
-            UpdateDB();
             return;
         }
     }
@@ -208,11 +239,20 @@
 
 
 
-
+function DeleteModelData(modelSelector)
+{
+    try 
+    {
+        this._rev = modelSelector.active3D._rev;
+        this._id = modelSelector.active3D._id;
+    }
+    catch (ex){console.log(ex)}
+}
 
 function ModelData(modelSelector, pickInfo)
 {
     var THIS = this;
+    this.create = true;
     if (modelSelector.active3D != null)
     {
         var model = modelSelector.active3D.name.replace(/[0-9]/g, '');

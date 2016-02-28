@@ -1,31 +1,26 @@
 
 function List(){
-    var root = {_id: 'root'}, cursor = {_id: 'cursor'};
-    cursor = root;
-    cursor.next = null;
+    var root = null, cursor;
     return {
         GetRoot: function(){
             return root;
         },
         Push: function (node){
-            var prev = cursor;
-            cursor.next = node;
-            cursor = cursor.next;
-            cursor.prev = prev;
-            cursor.next = null;
+            if (!root) {root=node; cursor = root;}
+            else {
+                cursor.next = node;
+                cursor = cursor.next;
+                cursor.next = null;
+            }
         },
         Search: function (name){
             var p = root;
             while ((p._id != name) && (p.next != null)) {
                 p = p.next;
             }
-            if (p._id == name){
-               return p;
-               console.log('Item was found!');
-            }
-            else {
-                 console.log("Item wasn't found!");
-                 }
+            if (p._id == name)
+                return p;
+            else return false;
         },
         Delete: function (name){
             var p = root;
@@ -34,15 +29,31 @@ function List(){
                 prec = p;
                 p = p.next;
             }
-            if (p._id == name) {
-                prec.next = p.next;
-                if (p.next) p.next.prev = prec;
-                delete p;
-                console.log('Item was deleted!');
+            if (p._id == name)
+            { 
+                if (p==root){
+                    if (p.next == null){
+                        p.dispose();
+                        delete p;
+                        root = null;
+                    }
+                    else {
+                        root = p.next;
+                        p.dispose();
+                        delete p;
+                        cursor = root;
+                    }
+                } else { 
+                    prec.next = p.next;
+                    if (p.next) cursor = p.next 
+                    else cursor = prec;
+
+                    p.dispose();
+                    delete p;
+                    return; 
+                }
             }
-            else {
-                 console.log("Item wasn't found!");
-                 }
+            else return false;
         },
         /*Sort: function (){
             var sort = false
@@ -57,9 +68,9 @@ function List(){
         Show: function (){
             var p = root;
             var res = [];
-            while (p.next != null) {
-                p = p.next;
+            while (p) {
                 res.push(p._id);
+                p = p.next;               
             }
             console.log(res);
         }
