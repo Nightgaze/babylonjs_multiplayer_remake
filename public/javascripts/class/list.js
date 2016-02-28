@@ -1,19 +1,12 @@
 
 function List(){
+    var public = {};
     var root = null, cursor;
-    return {
-        GetRoot: function(){
+    
+        public.GetRoot = function(){
             return root;
-        },
-        Push: function (node){
-            if (!root) {root=node; cursor = root;}
-            else {
-                cursor.next = node;
-                cursor = cursor.next;
-                cursor.next = null;
-            }
-        },
-        Search: function (name){
+        }
+        public.Search = function (name){
             var p = root;
             while ((p._id != name) && (p.next != null)) {
                 p = p.next;
@@ -21,8 +14,18 @@ function List(){
             if (p._id == name)
                 return p;
             else return false;
-        },
-        Delete: function (name){
+        }
+        public.Push = function (node){
+            if (!public.Search(node._id))
+                if (!root) {root=node; cursor = root;}
+                else {
+                    cursor.next = node;
+                    cursor = cursor.next;
+                    cursor.next = null;
+                }
+            else console.log("Items is already in list!");
+        }
+        public.Delete = function (name){
             var p = root;
             var prec;
             while ((p._id != name) && (p.next != null)) {
@@ -54,7 +57,7 @@ function List(){
                 }
             }
             else return false;
-        },
+        }
         /*Sort: function (){
             var sort = false
             while (!sort) {
@@ -65,7 +68,7 @@ function List(){
                 }
             }
         }*/
-        Show: function (){
+        public.Show = function (){
             var p = root;
             var res = [];
             while (p) {
@@ -79,6 +82,6 @@ function List(){
      
 
     
-    }
     
+    return public;
 }

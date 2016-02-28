@@ -7,7 +7,7 @@ var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 server.listen(80);
 
-
+var PlayerData = require('./public/javascripts/class/playerdata.js');
 
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -19,10 +19,11 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var nano = require('nano')(DATABASE);
 var props = nano.use('props');
+var players = nano.use('players');
 
 //IT'S ELEGANT BUT INEFFICIENT, MOVE THIS GARBAGE AND STOP WAITING FOR DB'S ASS, DO IT RIGHT AWAY
 var propsFeed = props.follow({include_docs:true, feed: "longpoll" ,since: "now"});
-propsFeed.on('change', function (change) { console.log(change);
+propsFeed.on('change', function (change) { //console.log(change);
     if (change.doc._deleted) ;
        // io.sockets.emit('remove props', change.doc);
     else if (change.doc.update) 
@@ -31,6 +32,17 @@ propsFeed.on('change', function (change) { console.log(change);
 });
 propsFeed.follow();
 
+var playersFeed = players.follow({include_docs: true, feed: "longpoll", since: "now"});
+playersFeed.on('change', function(change){console.log('change');
+    //distinguish
+    players.view('design', 'get players', function(err, res){
+        if (err) console.log(err.message)
+        else if (res.rows.length != 0)
+            {io.sockets.emit('load players', playerData);  console.log('sent it fam');}
+    });
+
+})
+playersFeed.follow();
 
 /*
 feed.on('change', function (change) {
@@ -45,7 +57,26 @@ process.nextTick(function () {
 
 //SOCKET.IO
 io.on('connection', function (socket){
-    socket.emit('news', { message: 'connected!' });
+    pos = {x: Math.random() * 200, y: 300, z: Math.random() * 200};
+                                    //name, pos, tranSpeed, canFly, flySpeed, rotSpeed, model
+    var name = Math.random().toString(36).substring(7);
+    var data = new PlayerData(name,  pos,  1.2,       true,    2,       1.2);
+    //io.sockets.emit('new player', playerData);
+    players.insert(data, data.name, function (err, body, header){
+            if (err){
+                console.log(err.message);
+                return;
+            } 
+     });
+
+    //send event to load all players
+    players.view('design', 'get players', function (err, res)
+    {
+        if (err) console.log(err.message)
+         if (res.rows.length != 0)
+           io.sockets.emit('load players', res);
+    });
+
 
     //get props:
     props.view('design', 'get props', function (err, res)

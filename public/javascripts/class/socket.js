@@ -4,6 +4,7 @@ function Socket(game){
 
     var scene = game.getScene();
     var props = game.getProps();
+    var playerList = game.getPlayerList();
     sock.on('load props', function (data)
     {
         try 
@@ -15,6 +16,17 @@ function Socket(game){
             });
         }
         catch(ex){console.log(ex) }
+    });
+
+    sock.on('load players', function(doc){
+        try 
+        {
+            data.rows.forEach(function (doc){
+                doc = doc.value;
+                playerList.Push(new Player(doc, game, true));       //FIX THAT TRUE
+
+            });
+        }catch (ex){}
     });
 
     sock.on('create props', function(data){

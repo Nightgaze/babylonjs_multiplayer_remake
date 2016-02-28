@@ -4,10 +4,9 @@ function GameObject()
     var isConnected = false;
     var canvas, engine, scene, camera,
     light,
-    playerList, models = [], materials = [];
+    models = [], materials = [];
 
-    var props = new List();
-    pos = new BABYLON.Vector3(Math.random() * 200, 300, Math.random() * 200);
+    var props = new List(), playerList = new List();
     
 
     var createScene = function()
@@ -29,7 +28,7 @@ function GameObject()
         scene.debugLayer.shouldDisplayAxis = true;*/
 
         //scene.debugLayer.show();
-        camera = new BABYLON.ArcRotateCamera("Camera", 0.5, 1.4, 300, pos, scene);
+        camera = new BABYLON.ArcRotateCamera("Camera", 0.5, 1.4, 300, BABYLON.Vector3.Zero(), scene);
         camera.attachControl(canvas, false);
         camera.keysLeft = [39];
         camera.keysRight = [37];
@@ -73,7 +72,6 @@ function GameObject()
     var setupGame = function (){
         scene = createScene();
         loadModels();
-        playerList = new List();
         scene.executeWhenReady(public.connect);
     }
 
@@ -87,8 +85,10 @@ function GameObject()
    
     
     public.connect = function (){
-        if (!isConnected){
-            playerList.Push(new Player("L", public, pos, true));
+        if (!isConnected){                //name, pos, tranSpeed, canFly, flySpeed, rotSpeed, model
+            //var playerData = new PlayerData("L",  pos,  1.2,       true,    2,       1.2);
+
+            //playerList.Push(new Player(playerData, public, true));
             isConnected = true;
         }
         else console.log('You are already connected.');
@@ -98,6 +98,9 @@ function GameObject()
     }
     public.getScene = function(){
         return scene;   
+    }
+    public.getPlayerList = function(){
+        return playerList;    
     }
     public.getGround = function(){
         return ground;    
