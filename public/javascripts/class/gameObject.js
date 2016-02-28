@@ -7,7 +7,7 @@ function GameObject()
     playerList, models = [], materials = [];
 
     var props = new List();
-    pos = new BABYLON.Vector3(0, 300, 0);
+    pos = new BABYLON.Vector3(Math.random() * 200, 300, Math.random() * 200);
     
 
     var createScene = function()
@@ -88,8 +88,8 @@ function GameObject()
     
     public.connect = function (){
         if (!isConnected){
-        playerList.Push(new Player("L", public, pos));
-        isConnected = true;
+            playerList.Push(new Player("L", public, pos, true));
+            isConnected = true;
         }
         else console.log('You are already connected.');
     }

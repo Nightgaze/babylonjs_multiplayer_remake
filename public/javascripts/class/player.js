@@ -1,5 +1,5 @@
 
-function Player(name, game, position)
+function Player(name, game, position, mine)
 {
     var tranSpeed = 2;
     var flySpeed = 2;
@@ -121,7 +121,7 @@ function Player(name, game, position)
         scene.unregisterBeforeRender(public.TerrainRaycast);
     }
 
-    createCamera();
+    if (mine )createCamera();
 
 }
 

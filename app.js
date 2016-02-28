@@ -20,11 +20,11 @@ var users = require('./routes/users');
 var nano = require('nano')(DATABASE);
 var props = nano.use('props');
 
-
+//IT'S ELEGANT BUT INEFFICIENT, MOVE THIS GARBAGE AND STOP WAITING FOR DB'S ASS, DO IT RIGHT AWAY
 var propsFeed = props.follow({include_docs:true, feed: "longpoll" ,since: "now"});
-propsFeed.on('change', function (change) {
-    if (change.doc._deleted) 
-        io.sockets.emit('remove props', change.doc);
+propsFeed.on('change', function (change) { console.log(change);
+    if (change.doc._deleted) ;
+       // io.sockets.emit('remove props', change.doc);
     else if (change.doc.update) 
         io.sockets.emit('update props', change.doc);
     else if(change.doc.create)io.sockets.emit('create props', change.doc);
@@ -64,7 +64,7 @@ io.on('connection', function (socket){
 
     socket.on('update props', function(data){
         props.insert(data, function(err, body){
-            if (err) console.log(err.message);    
+            if (err) console.log(err.message);  
         });
     });
 
@@ -82,6 +82,7 @@ io.on('connection', function (socket){
     socket.on('remove props', function(data){
         props.destroy(data._id, data._rev, function(err, body){
            if (err) console.log(err.message);
+           else io.sockets.emit('remove props', data);
         });    
     });
 });
