@@ -5,9 +5,8 @@ function Object3D(game, position, model){
     var scene = game.getScene();
     var ground = game.getGround();
     public.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
-
     try {
-    public.mesh = scene.getMeshByName(doc.model).clone();
+    public.mesh = scene.getMeshByName(model).clone();
     }catch(ex){public.mesh = scene.getMeshByName("sphere").clone()}
     finally{public.mesh.position = position}
     

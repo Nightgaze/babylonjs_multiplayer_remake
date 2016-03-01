@@ -43,7 +43,7 @@
                 if(keyW)
                 {
                     //player.WC();
-                    socket.emit('stop player', {id: player._id, type: 'W'});
+                    socket.emit('stop player', {id: player.getId(), _rev: player.getRev(), type: 'W'});
                     keyW = false;
             
                 }
@@ -94,6 +94,24 @@
                     break;
         }
     }
+
+    function onMouseDown(){
+        var cam = player.getCamera();
+        var prec = {};
+        game.getScene().registerBeforeRender(function(){
+            //var data = {alpha: cam.alpha, beta: cam.beta, _id: player.getId()}
+            if ((prec.alpha != cam.alpha) && (prec.beta != cam.beta)){
+                prec.alpha = cam.alpha;
+                prec.beta = cam.beta;
+                socket.emit('camera data', {alpha: cam.alpha, beta: cam.beta, _id: player.getId()});
+            }
+            /*if (prec != data){ console.log(prec.alpha + ' comparat cu ' + data.alpha)
+                socket.emit('camera data', data);
+                prec = data;
+            }*/
+        });
+            
+    }
     
     BABYLON.Tools.RegisterTopRootEvents([
         {
@@ -113,6 +131,10 @@
             name: "click",
             handler: onClick
             
+        },
+        {
+            name: "mousedown",
+            handler: onMouseDown
         }
             
     ]);

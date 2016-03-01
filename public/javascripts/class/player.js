@@ -1,25 +1,27 @@
 
 function Player(playerData, game, mine)
 {   
-    
-    this._id = playerData._id
+    var _rev = playerData._rev;
+    var _id = playerData._id;
+    this._id = playerData._id;
     var position = new BABYLON.Vector3(playerData.position.x, playerData.position.y, playerData.position.z);
     var tranSpeed = playerData.tranSpeed;
     var flySpeed = playerData.flySpeed;
     var rotSpeed = playerData.rotSpeed;
     var canFly = playerData.canFly;
-    //var isMoving = playerData.isMoving;
     var isFlying = playerData.isFlying;
-    var public = Object3D.call(this, game, position);
+    var public = Object3D.call(this, game, position, "box");
     public._id = playerData._id;
     var engine = game.getEngine();
     var canvas = engine.getRenderingCanvas();
     var scene = game.getScene();
+    var camera = {alpha: 1, beta: 1};
 
     if (mine) {var keyboard = new Keyboard(public, game); console.log('keyboard created')}
     var root = scene.getMeshByName("sphere").clone();
     root.position = position;
     root.rotation = public.rotation;
+    root.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3)
     
     var createCamera = function(){
         camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", 1, 1.5, 0.8, new BABYLON.Vector3(0, 0, 0), scene);
@@ -34,7 +36,6 @@ function Player(playerData, game, mine)
             var speed;
             if (isFlying) speed = flySpeed* (Math.abs(camera.beta - 3.14) * flySpeed * 2.3);
                 else speed = tranSpeed;
-            console.log(speed);
             res = public.mesh.calcMovePOV(0, 0, 1);
             position.x += res.x * speed * scene.getAnimationRatio();
             position.y += res.y * speed * scene.getAnimationRatio();
@@ -100,7 +101,7 @@ function Player(playerData, game, mine)
         }
     }
     
-    if (mine) scene.registerBeforeRender(rotationCheck);
+   scene.registerBeforeRender(rotationCheck);
 
     //translation:
     public.W = function(){
@@ -126,8 +127,29 @@ function Player(playerData, game, mine)
         isMoving = false;
         scene.unregisterBeforeRender(public.TerrainRaycast);
     }
+    public.getCamera = function(){
+        return camera;    
+    }
+    public.getId = function(){
+        return _id;     
+    }
+    public.getRev = function(){
+        return _rev;    
+    }
+    public.updateCamData = function(data){
+        camera.alpha = data.alpha;
+        camera.beta = data.beta;
+        console.log(_id + ' ' + data.alpha + ' ' + data.beta);    
+    }
+    public.isMine = function(){return mine;}
 
-
+    //MAKE THIS GREAT
+    public.dispose = function(){
+        public.mesh.dispose();
+        root.dispose();
+        delete THIS;    
+        
+    }
     if (mine) createCamera();
     return public;
 }

@@ -69,10 +69,12 @@ var utilSocket = io.of('/utilsocket').on('connection', function(socket){
 
 var realtimeSocket = io.of('/realtimesocket').on('connection', function (socket){
     socket.on('set name', function(name){
+        console.log(name + ' has connected!')
+        socket.name = name;
         pos = {x: Math.random() * 200, y: 300, z: Math.random() * 200};                              
   
                                 //name, pos, tranSpeed, canFly, flySpeed, rotSpeed, model
-        var data = new PlayerData(name,  pos,  1.2,       true,    2,       1.2);
+        var data = new PlayerData(name,  pos,  0.8,       true,    1,       1.2);
         //io.sockets.emit('new player', playerData);
         players.insert(data, data.name, function (err, body, header){
                 if (err){
@@ -81,11 +83,31 @@ var realtimeSocket = io.of('/realtimesocket').on('connection', function (socket)
                 } 
          });
     });
+    socket.on('disconnect', function(data){
+        console.log(socket.name + 'has disconnected.');
+        var rev;
+        players.view('design', 'get players',{keys: [socket.name]}, function(err, res){      
+            rev = res.rows[0].value._rev;
+            console.log(rev);
+            players.destroy(socket.name, rev, function(err, body){
+                if (err) console.log(err.message);
+                 
+            })
+        }); 
+        
 
-
+        
+    })
 
     socket.on('move player', function(data){realtimeSocket.emit('move player', data);});
-    socket.on('stop player', function(data){realtimeSocket.emit('stop player', data);});
+    socket.on('stop player', function(data){
+        
+        realtimeSocket.emit('stop player', data);
+        //players.insert
+     });
+    socket.on('camera data', function(data){
+       realtimeSocket.emit('camera data', data);
+    });
     
 
     //send event to load all players
@@ -124,12 +146,15 @@ propsFeed.follow();
 
 var playersFeed = players.follow({include_docs: true, feed: "longpoll", since: "now"});
 playersFeed.on('change', function(change){
+
     //distinguish
-    players.view('design', 'get players', function(err, res){
-        if (err) console.log(err.message)
-        else if (res.rows.length != 0)
-            realtimeSocket.emit('load players', res);
-    });
+    if (!change.deleted)
+        players.view('design', 'get players', function(err, res){
+            if (err) console.log(err.message)
+            else if (res.rows.length != 0)
+                realtimeSocket.emit('load players', res);
+        });
+    else realtimeSocket.emit('remove player', change.doc._id);
 
 })
 playersFeed.follow();

@@ -168,33 +168,37 @@
         }
         else if (pickInfo.hit) 
         {
+            
             if (THIS.active3D)
             {
                 THIS.active3D.material.alpha = 1.0;
             }
-             
+            
             currentMesh = pickInfo.pickedMesh;
-            THIS.active3D = currentMesh;            
-            THIS.active3D.material.alpha = 0.7;
-            THIS.scalingX = THIS.active3D.scaling.x;
-            THIS.scalingY = THIS.active3D.scaling.y;
-            THIS.scalingZ = THIS.active3D.scaling.z;
-            THIS.rotationX = THIS.active3D.rotation.x;
-            THIS.rotationY = THIS.active3D.rotation.y;
-            THIS.rotationZ = THIS.active3D.rotation.z;
-            transform.open();
-            UpdateGUI();
-
-
-            startingPoint = getGroundPosition(evt);
-
-            if (startingPoint) 
+            if (THIS.active3D != currentMesh)
             {
-                setTimeout(function () 
+                THIS.active3D = currentMesh;            
+                THIS.active3D.material.alpha = 0.7;
+                THIS.scalingX = THIS.active3D.scaling.x;
+                THIS.scalingY = THIS.active3D.scaling.y;
+                THIS.scalingZ = THIS.active3D.scaling.z;
+                THIS.rotationX = THIS.active3D.rotation.x;
+                THIS.rotationY = THIS.active3D.rotation.y;
+                THIS.rotationZ = THIS.active3D.rotation.z;
+                transform.open();
+                UpdateGUI();
+
+
+                startingPoint = getGroundPosition(evt);
+
+                if (startingPoint) 
                 {
-                    scene.activeCamera.detachControl(canvas);
-                }, 0);
-            }
+                    setTimeout(function () 
+                    {
+                        scene.activeCamera.detachControl(canvas);
+                    }, 0);
+                }
+            } else THIS.active3D = null; 
         }
 
         
