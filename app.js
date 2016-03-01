@@ -21,28 +21,7 @@ var nano = require('nano')(DATABASE);
 var props = nano.use('props');
 var players = nano.use('players');
 
-//IT'S ELEGANT BUT INEFFICIENT, MOVE THIS GARBAGE AND STOP WAITING FOR DB'S ASS, DO IT RIGHT AWAY
-var propsFeed = props.follow({include_docs:true, feed: "longpoll" ,since: "now"});
-propsFeed.on('change', function (change) { //console.log(change);
-    if (change.doc._deleted) ;
-       // io.sockets.emit('remove props', change.doc);
-    else if (change.doc.update) 
-        io.sockets.emit('update props', change.doc);
-    else if(change.doc.create)io.sockets.emit('create props', change.doc);
-});
-propsFeed.follow();
-var i=0;
-var playersFeed = players.follow({include_docs: true, feed: "longpoll", since: "now"});
-playersFeed.on('change', function(change){
-    //distinguish
-    players.view('design', 'get players', function(err, res){
-        if (err) console.log(err.message)
-        else if (res.rows.length != 0)
-           { io.sockets.emit('load players', res); console.log(i++);}
-    });
 
-})
-playersFeed.follow();
 
 /*
 feed.on('change', function (change) {
@@ -56,44 +35,13 @@ process.nextTick(function () {
 
 
 //SOCKET.IO
-io.on('connection', function (socket){
-    pos = {x: Math.random() * 200, y: 300, z: Math.random() * 200};
-                                    //name, pos, tranSpeed, canFly, flySpeed, rotSpeed, model
-    var name = Math.random().toString(36).substring(7);
-    var data = new PlayerData(name,  pos,  1.2,       true,    2,       1.2);
-    //io.sockets.emit('new player', playerData);
-    players.insert(data, data.name, function (err, body, header){
-            if (err){
-                console.log(err.message);
-                return;
-            } 
-     });
-
-    //send event to load all players
-    /*players.view('design', 'get players', function (err, res)
-    {
-        if (err) console.log(err.message)
-         if (res.rows.length != 0)
-           io.sockets.emit('load players', res);
-    });*/
-
-
-    //get props:
-    props.view('design', 'get props', function (err, res)
-    {
+var utilSocket = io.of('/utilsocket').on('connection', function(socket){
+    props.view('design', 'get props', function (err, res){
         if (res.rows.length != 0)
             socket.emit('load props', res);
     });
 
 
-    /*socket.on('request rev', function(data){
-        props.view('design', 'get props',{keys: [data._id]}, function(err, body){      
-            socket.emit('get rev', {_rev: body.rows[0].value._rev});
-        });    
-        
-    });*/
-
- 
     socket.on('update props', function(data){
         props.insert(data, function(err, body){
             if (err) console.log(err.message);  
@@ -109,15 +57,84 @@ io.on('connection', function (socket){
             } 
          });
      });
-       
 
     socket.on('remove props', function(data){
         props.destroy(data._id, data._rev, function(err, body){
            if (err) console.log(err.message);
-           else io.sockets.emit('remove props', data);
+           else utilSocket.emit('remove props', data);
         });    
     });
+
 });
+
+var realtimeSocket = io.of('/realtimesocket').on('connection', function (socket){
+    socket.on('set name', function(name){
+        pos = {x: Math.random() * 200, y: 300, z: Math.random() * 200};                              
+  
+                                //name, pos, tranSpeed, canFly, flySpeed, rotSpeed, model
+        var data = new PlayerData(name,  pos,  1.2,       true,    2,       1.2);
+        //io.sockets.emit('new player', playerData);
+        players.insert(data, data.name, function (err, body, header){
+                if (err){
+                    console.log(err.message);
+                    return;
+                } 
+         });
+    });
+
+
+
+    socket.on('move player', function(data){realtimeSocket.emit('move player', data);});
+    socket.on('stop player', function(data){realtimeSocket.emit('stop player', data);});
+    
+
+    //send event to load all players
+    /*players.view('design', 'get players', function (err, res)
+    {
+        if (err) console.log(err.message)
+         if (res.rows.length != 0)
+           io.sockets.emit('load players', res);
+    });*/
+
+
+    //get props:
+
+
+
+    /*socket.on('request rev', function(data){
+        props.view('design', 'get props',{keys: [data._id]}, function(err, body){      
+            socket.emit('get rev', {_rev: body.rows[0].value._rev});
+        });    
+        
+    });*/
+
+});
+
+
+//IT'S ELEGANT BUT INEFFICIENT, MOVE THIS GARBAGE AND STOP WAITING FOR DB'S ASS, DO IT RIGHT AWAY
+var propsFeed = props.follow({include_docs:true, feed: "longpoll" ,since: "now"});
+propsFeed.on('change', function (change) { //console.log(change);
+    if (change.doc._deleted) ;
+       // io.sockets.emit('remove props', change.doc);
+    else if (change.doc.update) 
+        utilSocket.emit('update props', change.doc);
+    else if(change.doc.create) utilSocket.emit('create props', change.doc);
+});
+propsFeed.follow();
+
+var playersFeed = players.follow({include_docs: true, feed: "longpoll", since: "now"});
+playersFeed.on('change', function(change){
+    //distinguish
+    players.view('design', 'get players', function(err, res){
+        if (err) console.log(err.message)
+        else if (res.rows.length != 0)
+            realtimeSocket.emit('load players', res);
+    });
+
+})
+playersFeed.follow();
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

@@ -3,7 +3,7 @@
 
     var keyW = false;
     var keyS = false;
-    var socket = game.getSocket();
+    var socket = game.getRealtimeSocket();
     
     function onKeyDown(event)
     {
@@ -16,7 +16,8 @@
             case 87:
                 if (!keyW)      //W
                 {
-                    player.W();
+                    //player.W();
+                    socket.emit('move player', {id: player._id, type: 'W'});
                     keyW = true;
                 }
                 break;
@@ -24,7 +25,8 @@
             case 83:
                 if (!keyS)      //S
                 {
-                    player.S();
+                    //player.S();
+                    socket.emit('move player', {id: player._id, type: 'S'});
                     keyS = true;
                 }
                 break;    
@@ -40,7 +42,8 @@
             case 87:        //W
                 if(keyW)
                 {
-                    player.WC();
+                    //player.WC();
+                    socket.emit('stop player', {id: player._id, type: 'W'});
                     keyW = false;
             
                 }
@@ -49,7 +52,8 @@
             case 83:
                 if (keyS)   //S
                 {
-                    player.SC();
+                    //player.SC();
+                    socket.emit('stop player', {id: player._id, type: 'S'});
                     keyS = false;
                 }
                 break;

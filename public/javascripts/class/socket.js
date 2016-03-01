@@ -1,6 +1,68 @@
-function Socket(game){
-    var sock;
-    sock = io.connect();
+function RealtimeSocket(game, name){
+    var sock = io.connect(document.location.origin + '/realtimesocket');
+    var scene = game.getScene();
+    var props = game.getProps();
+    var playerList = game.getPlayerList();
+
+    sock.on('load players', function(data){
+        //try 
+        //{
+          
+            data.rows.forEach(function (doc){
+                var id = doc.id;
+                doc = doc.value; 
+                
+                if (!playerList.Search(doc._id))
+                    {   
+                        if (id == name) 
+                            playerList.Push(new Player(doc, game, true));
+                        else 
+                            playerList.Push(new Player(doc, game, false)); 
+                    }
+
+            });
+        //}catch (ex){console.log(ex.message)}
+    });
+
+    sock.on('move player', function(data){
+        var p = playerList.Search(data.id);
+        if (p) switch (data.type){
+            case 'W':
+                p.W();
+                break;
+            case 'S':
+                p.S();
+                break;
+
+        }
+        props.Search(data.id)    
+    });
+
+    sock.on('stop player', function(data){
+        var p = playerList.Search(data.id); console.log(p);
+        if (p) switch (data.type){
+            case 'W':
+                p.WC();
+                break;
+            case 'S':
+                p.SC();
+                break;
+
+        }
+        props.Search(data.id)    
+    });
+
+    return {
+        emit: function(event, data){
+            sock.emit(event, data);
+        }    
+        
+    }
+    
+}
+
+function UtilSocket(game){
+    var sock = io.connect(document.location.origin + '/utilsocket');
 
     var scene = game.getScene();
     var props = game.getProps();
@@ -20,17 +82,6 @@ function Socket(game){
         catch(ex){console.log(ex) }
     });
 
-    sock.on('load players', function(data){console.log('load players received')
-        try 
-        {
-            data.rows.forEach(function (doc){
-                doc = doc.value; 
-                if (!playerList.Search(doc._id))
-                    playerList.Push(new Player(doc, game, true));       //FIX THAT TRUE
-
-            });
-        }catch (ex){console.log(ex.message)}
-    });
 
     sock.on('create props', function(data){
         props.Push(new Prop(data, scene));

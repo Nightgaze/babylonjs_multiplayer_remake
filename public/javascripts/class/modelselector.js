@@ -64,6 +64,7 @@
             //socket.emit('request rev',{_id: THIS.active3D._id});
             var data = new UpdateModelData(THIS, {pickedPoint: {x: THIS.active3D.position.x, y: THIS.active3D.position.y,z: THIS.active3D.position.z}});
             socket.emit('update props', data);
+            
         }    
     }
     var DeleteInDB = function(){
@@ -208,6 +209,7 @@
         if (startingPoint) {
             scene.activeCamera.attachControl(canvas, true);
              UpdateDB();
+             console.log('mota')
             startingPoint = null;
             return;
         }

@@ -1,6 +1,7 @@
 
 function Player(playerData, game, mine)
-{   console.log('new player' + playerData._id);
+{   
+    
     this._id = playerData._id
     var position = new BABYLON.Vector3(playerData.position.x, playerData.position.y, playerData.position.z);
     var tranSpeed = playerData.tranSpeed;
@@ -9,11 +10,13 @@ function Player(playerData, game, mine)
     var canFly = playerData.canFly;
     //var isMoving = playerData.isMoving;
     var isFlying = playerData.isFlying;
-    var public = Object3D.call(this, game, playerData.position);
+    var public = Object3D.call(this, game, position);
+    public._id = playerData._id;
     var engine = game.getEngine();
     var canvas = engine.getRenderingCanvas();
     var scene = game.getScene();
-    var keyboard = new Keyboard(public, game);
+
+    if (mine) {var keyboard = new Keyboard(public, game); console.log('keyboard created')}
     var root = scene.getMeshByName("sphere").clone();
     root.position = position;
     root.rotation = public.rotation;
@@ -97,7 +100,7 @@ function Player(playerData, game, mine)
         }
     }
     
-    scene.registerBeforeRender(rotationCheck);
+    if (mine) scene.registerBeforeRender(rotationCheck);
 
     //translation:
     public.W = function(){
@@ -124,8 +127,9 @@ function Player(playerData, game, mine)
         scene.unregisterBeforeRender(public.TerrainRaycast);
     }
 
-    if (mine )createCamera();
 
+    if (mine) createCamera();
+    return public;
 }
 
 

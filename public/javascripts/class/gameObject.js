@@ -4,8 +4,8 @@ function GameObject()
     var isConnected = false;
     var canvas, engine, scene, camera,
     light,
-    models = [], materials = [];
-
+    models = [], materials = [], name;
+    var realtimeSocket, utilSocket;
     var props = new List(), playerList = new List();
     
 
@@ -27,7 +27,7 @@ function GameObject()
         scene.collisionsEnabled = true;
         scene.debugLayer.shouldDisplayAxis = true;*/
 
-        scene.debugLayer.show();
+        //scene.debugLayer.show();
         camera = new BABYLON.ArcRotateCamera("Camera", 0.5, 1.4, 300, BABYLON.Vector3.Zero(), scene);
         camera.attachControl(canvas, false);
         camera.keysLeft = [39];
@@ -83,18 +83,11 @@ function GameObject()
 
     //Public:
    
-    
-    public.connect = function (){
-        if (!isConnected){                //name, pos, tranSpeed, canFly, flySpeed, rotSpeed, model
-            //var playerData = new PlayerData("L",  pos,  1.2,       true,    2,       1.2);
-
-            //playerList.Push(new Player(playerData, public, true));
-            isConnected = true;
-        }
-        else console.log('You are already connected.');
+    public.getUtilSocket = function(){
+        return utilSocket;    
     }
-    public.getSocket = function(){
-        return socket;    
+    public.getRealtimeSocket = function(){
+        return realtimeSocket;
     }
     public.getScene = function(){
         return scene;   
@@ -117,11 +110,26 @@ function GameObject()
     public.getProps = function(){
         return props;    
     }
+
+    
+    public.connect = function (){
+        if (!isConnected){                //name, pos, tranSpeed, canFly, flySpeed, rotSpeed, model
+            name = Math.random().toString(36).substring(7);
+            realtimeSocket = new RealtimeSocket(public, name);
+            realtimeSocket.emit('set name', name);
+            //var playerData = new PlayerData("L",  pos,  1.2,       true,    2,       1.2);
+
+            //playerList.Push(new Player(playerData, public, true));
+            isConnected = true;
+        }
+        else console.log('You are already connected.');
+    }
+
     setupGame();
     engine.runRenderLoop(render);
 
-    var socket = new Socket(public);
-    var modelSelector = new ModelSelector(public, socket);
+    utilSocket = new UtilSocket(public);
+    var modelSelector = new ModelSelector(public, utilSocket);
     return public;
  }
  
