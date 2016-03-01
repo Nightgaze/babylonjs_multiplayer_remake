@@ -138,8 +138,7 @@ function Player(playerData, game, mine)
     }
     public.updateCamData = function(data){
         camera.alpha = data.alpha;
-        camera.beta = data.beta;
-        console.log(_id + ' ' + data.alpha + ' ' + data.beta);    
+        camera.beta = data.beta;    
     }
     public.isMine = function(){return mine;}
 

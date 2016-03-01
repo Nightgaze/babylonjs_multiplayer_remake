@@ -72,7 +72,6 @@ function RealtimeSocket(game, name){
 
 function UtilSocket(game){
     var sock = io.connect(document.location.origin + '/utilsocket');
-
     var scene = game.getScene();
     var props = game.getProps();
     var playerList = game.getPlayerList();
@@ -104,7 +103,8 @@ function UtilSocket(game){
         
     sock.on('remove props', function(data){
         try {
-        props.Delete(data._id);
+            props.Delete(data._id);
+            if (modelSelector.active3D._id == data._id) modelSelector.active3D = null;
         }catch(ex){}
     })
         
@@ -125,7 +125,7 @@ function UtilSocket(game){
     }
     socket.emit('event', data);
     socket.on('event', function(){})
-
+    
 }
 
 

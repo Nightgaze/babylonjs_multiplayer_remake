@@ -6,6 +6,7 @@ function GameObject()
     light,
     models = [], materials = [], name;
     var realtimeSocket, utilSocket;
+    var modelSelector;
     var props = new List(), playerList = new List();
     
 
@@ -129,7 +130,11 @@ function GameObject()
     engine.runRenderLoop(render);
 
     utilSocket = new UtilSocket(public);
-    var modelSelector = new ModelSelector(public, utilSocket);
+    modelSelector = new ModelSelector(public, utilSocket);
+    public.getModelselector = function(){
+        return modelSelector;    
+    }
+    public.test = function(){return 'test'}
     return public;
  }
  
