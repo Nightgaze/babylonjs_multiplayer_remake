@@ -88,7 +88,6 @@ var realtimeSocket = io.of('/realtimesocket').on('connection', function (socket)
         var rev;
         players.view('design', 'get players',{keys: [socket.name]}, function(err, res){      
             rev = res.rows[0].value._rev;
-            console.log(rev);
             players.destroy(socket.name, rev, function(err, body){
                 if (err) console.log(err.message);
                  

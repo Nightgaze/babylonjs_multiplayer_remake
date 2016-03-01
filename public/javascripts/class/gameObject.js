@@ -19,8 +19,8 @@ function GameObject()
         //Environment
         scene.fogEnabled = true;
         scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
-        scene.fogDensity = 0.0007;
-        
+        scene.fogDensity = 0.0002;
+        //scene.clearColor = new BABYLON.COLOR3(0.6, 0.6, 0.9);
         light = new BABYLON.DirectionalLight("Directional", new BABYLON.Vector3(0, -1, -0.3), scene);
         
         /*Physics
