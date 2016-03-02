@@ -17,7 +17,7 @@
                 if (!keyW)      //W
                 {
                     //player.W();
-                    socket.emit('move player', {id: player._id, type: 'W'});
+                    socket.emit('move player', {_id: player._id, type: 'W'});
                     keyW = true;
                 }
                 break;
@@ -26,7 +26,7 @@
                 if (!keyS)      //S
                 {
                     //player.S();
-                    socket.emit('move player', {id: player._id, type: 'S'});
+                    socket.emit('move player', { _id: player._id, type: 'S'});
                     keyS = true;
                 }
                 break;    
@@ -43,7 +43,9 @@
                 if(keyW)
                 {
                     //player.WC();
-                    socket.emit('stop player', {id: player.getId(), _rev: player.getRev(), type: 'W'});
+                    var data = player.getPlayerData();
+                    data.type = 'W';
+                    socket.emit('stop player', data);
                     keyW = false;
             
                 }
@@ -52,8 +54,9 @@
             case 83:
                 if (keyS)   //S
                 {
-                    //player.SC();
-                    socket.emit('stop player', {id: player._id, type: 'S'});
+                    var data = player.getPlayerData();
+                    data.type = 'S';
+                    socket.emit('stop player', data);
                     keyS = false;
                 }
                 break;

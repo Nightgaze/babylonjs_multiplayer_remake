@@ -1,7 +1,9 @@
 
 function Player(playerData, game, mine)
 {   
+    
     var _rev = playerData._rev;
+   
     var _id = playerData._id;
     this._id = playerData._id;
     var position = new BABYLON.Vector3(playerData.position.x, playerData.position.y, playerData.position.z);
@@ -17,7 +19,7 @@ function Player(playerData, game, mine)
     var scene = game.getScene();
     var camera = {alpha: 1, beta: 1};
 
-    if (mine) {var keyboard = new Keyboard(public, game); console.log('keyboard created')}
+    if (mine) var keyboard = new Keyboard(public, game);
     var root = scene.getMeshByName("sphere").clone();
     root.position = position;
     root.rotation = public.rotation;
@@ -40,6 +42,9 @@ function Player(playerData, game, mine)
             position.x += res.x * speed * scene.getAnimationRatio();
             position.y += res.y * speed * scene.getAnimationRatio();
             position.z += res.z * speed * scene.getAnimationRatio();
+            playerData.position.x += res.x * speed * scene.getAnimationRatio();
+            playerData.position.y += res.y * speed * scene.getAnimationRatio();
+            playerData.position.z += res.z * speed * scene.getAnimationRatio();
 
         }
 
@@ -51,6 +56,9 @@ function Player(playerData, game, mine)
             position.x += res.x * speed * scene.getAnimationRatio();
             position.y += res.y * speed * scene.getAnimationRatio();
             position.z += res.z * speed * scene.getAnimationRatio();
+            playerData.position.x += res.x * speed * scene.getAnimationRatio();
+            playerData.position.y += res.y * speed * scene.getAnimationRatio();
+            playerData.position.z += res.z * speed * scene.getAnimationRatio();
 
         }
 
@@ -62,6 +70,9 @@ function Player(playerData, game, mine)
             position.x += res.x * speed * scene.getAnimationRatio();
             position.y += res.y * speed * scene.getAnimationRatio();
             position.z += res.z * speed * scene.getAnimationRatio();
+            playerData.position.x += res.x * speed * scene.getAnimationRatio();
+            playerData.position.y += res.y * speed * scene.getAnimationRatio();
+            playerData.position.z += res.z * speed * scene.getAnimationRatio();
 
         }
 
@@ -73,6 +84,9 @@ function Player(playerData, game, mine)
             position.x += res.x * speed * scene.getAnimationRatio();
             position.y += res.y * speed * scene.getAnimationRatio();
             position.z += res.z * speed * scene.getAnimationRatio();
+            playerData.position.x += res.x * speed * scene.getAnimationRatio();
+            playerData.position.y += res.y * speed * scene.getAnimationRatio();
+            playerData.position.z += res.z * speed * scene.getAnimationRatio();
         }
 
     var rotationCheck = function(){
@@ -131,16 +145,20 @@ function Player(playerData, game, mine)
         return camera;    
     }
     public.getId = function(){
-        return _id;     
+        return playerData._id;     
     }
     public.getRev = function(){
-        return _rev;    
+        return playerData._rev;    
+    }
+    public.setRev = function(rev){
+        playerData._rev = rev;
     }
     public.updateCamData = function(data){
         camera.alpha = data.alpha;
         camera.beta = data.beta;    
     }
     public.isMine = function(){return mine;}
+    public.getPlayerData = function(){return playerData;}
 
     //MAKE THIS GREAT
     public.dispose = function(){

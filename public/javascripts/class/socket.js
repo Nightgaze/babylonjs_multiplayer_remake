@@ -29,7 +29,8 @@ function RealtimeSocket(game, name){
     })
 
     sock.on('move player', function(data){
-        var p = playerList.Search(data.id);
+        console.log(data);
+        var p = playerList.Search(data._id);
         if (p) switch (data.type){
             case 'W':
                 p.W();
@@ -39,11 +40,11 @@ function RealtimeSocket(game, name){
                 break;
 
         }
-        props.Search(data.id)    
+        //props.Search(data._id);    
     });
 
     sock.on('stop player', function(data){
-        var p = playerList.Search(data.id);
+        var p = playerList.Search(data._id);
         if (p) switch (data.type){
             case 'W':
                 p.WC();
@@ -59,7 +60,11 @@ function RealtimeSocket(game, name){
        var p = playerList.Search(data._id);
        if (p)
            if (!p.isMine()) p.updateCamData(data);    
-    })
+    });
+    sock.on('update rev', function(data){
+        var p = playerList.Search(data._id);
+        if (p) p.setRev(data._rev);
+    });
 
     return {
         emit: function(event, data){
@@ -79,15 +84,15 @@ function UtilSocket(game){
     
     sock.on('load props', function (data)
     {
-        try 
-        {
+        //try 
+        //{
             data.rows.forEach(function (doc){
                 doc = doc.value;
                 props.Push(new Prop(doc, scene));
 
             });
-        }
-        catch(ex){console.log(ex) }
+        //}
+        //catch(ex){console.log(ex) }
     });
 
 

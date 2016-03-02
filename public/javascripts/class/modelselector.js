@@ -24,6 +24,7 @@
     }
 
     var gui = new dat.GUI();
+    console.log(gui);
     gui.add(this, 'activeModel', this.models);
     var activeMaterial = gui.add(this, 'activeMaterial', this.materials)
     gui.add(this, 'Delete');
@@ -185,6 +186,7 @@
                 THIS.rotationX = THIS.active3D.rotation.x;
                 THIS.rotationY = THIS.active3D.rotation.y;
                 THIS.rotationZ = THIS.active3D.rotation.z;
+                gui.open();
                 transform.open();
                 UpdateGUI();
 
@@ -213,7 +215,6 @@
         if (startingPoint) {
             scene.activeCamera.attachControl(canvas, true);
              UpdateDB();
-             console.log('mota')
             startingPoint = null;
             return;
         }
