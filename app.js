@@ -18,13 +18,13 @@ var PlayerData = require('./public/javascripts/class/playerdata.js');
 
 //DB:
 var nano = require('nano')(DATABASE);
-
-nano.db.create('props', function(err, body){
+/*nano.db.create('props', function(err, body){
     if (!err) console.log(body);    
 });
 nano.db.create('players', function(err, body){
    if (!err) console.log(body); 
-});
+});*/
+
 var props = nano.use('props');
 var players = nano.use('players');
 
@@ -98,7 +98,6 @@ var realtimeSocket = io.of('/realtimesocket').on('connection', function (socket)
         
         realtimeSocket.emit('stop player', data);
         data.update = true;
-        console.log(data._rev);
         players.insert(data, function(err, body){
             if (err) console.log(err.message);
         });
@@ -127,7 +126,7 @@ var playersFeed = players.follow({include_docs: true, feed: "longpoll", since: "
 playersFeed.on('change', function(change){
   
     //distinguish
-    if (change.delete) realtimeSocket.emit('remove player', change.doc._id);
+    if (change.doc._deleted) realtimeSocket.emit('remove player', change.doc._id);
     else if (change.doc.update) realtimeSocket.emit('update rev', {_id: change.doc._id, _rev: change.doc._rev});
     else
         players.view('design', 'get players', function(err, res){
