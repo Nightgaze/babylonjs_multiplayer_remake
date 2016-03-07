@@ -80,10 +80,10 @@ function List(){
             var p = root;
             var res = [];
             while (p) {
-                res.push(p._id);
+                res.push(p);
                 p = p.next;               
             }
-            console.log(res);
+            return res;
         }
         
 

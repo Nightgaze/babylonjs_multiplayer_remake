@@ -12,6 +12,7 @@
     for (var i=0; i<game.getModels().length; i++) this.models.push(game.getModels()[i].name);
     for (var i=0; i<game.getMaterials().length; i++) this.materials.push(game.getMaterials()[i].name);
 
+    this.offset = 0;
     this.scalingX = 1;
     this.scalingY = 1;
     this.scalingZ = 1;
@@ -37,7 +38,7 @@
     var rotX = transform.add(this, 'rotationX', -Math.PI*2, Math.PI*2).listen();
     var rotY = transform.add(this, 'rotationY', -Math.PI*2, Math.PI*2).listen();
     var rotZ = transform.add(this, 'rotationZ', -Math.PI*2, Math.PI*2).listen();
-    
+    var offset = transform.add(this, 'offset', 0, 40).listen();
 
     activeMaterial.onChange(function(value){
        if (THIS.active3D) THIS.active3D.material = scene.getMaterialByName(value); 
@@ -103,11 +104,13 @@
     });
 
     scaleX.onChange(function(value){
-        if (THIS.active3D) THIS.active3D.scaling.x = value;    
+        if (THIS.active3D) 
+            THIS.active3D.scaling.x = value;
     });
 
     scaleY.onChange(function(value){
-        if (THIS.active3D) THIS.active3D.scaling.y = value;    
+        if (THIS.active3D) 
+            THIS.active3D.scaling.y = value; 
     });
 
     scaleZ.onChange(function(value){
@@ -124,6 +127,17 @@
 
     rotZ.onChange(function(value){
         if (THIS.active3D) THIS.active3D.rotation.z = value;    
+    });
+
+    offset.onChange(function(value){
+        if (THIS.active3D){
+           ; 
+        }
+     
+    });
+
+    offset.onFinishChange(function(){
+       UpdateDB(); 
     });
 
     
@@ -151,13 +165,13 @@
 
     var onPointerDown = function (evt) 
     {
-        if (evt.button !== 0) {
+        if (evt.button !== 0 && evt.button !== 1) {
             return;
         }
 
         // check if we are under a mesh
         var pickInfo = scene.pick(scene.pointerX, scene.pointerY, function (mesh) { return true; });
-        if (pickInfo.pickedMesh == ground) 
+        if (evt.button == 1) 
         {
             try {
 
@@ -167,13 +181,12 @@
             catch(ex){};
             CreateInDB(pickInfo);
         }
-        else if (pickInfo.hit) 
+        else if (evt.button == 0 && pickInfo.hit && pickInfo.pickedMesh.name != 'ground') 
         {
             
-            if (THIS.active3D)
-            {
+            try {
                 THIS.active3D.material.alpha = 1.0;
-            }
+            }catch(ex){}
             
             currentMesh = pickInfo.pickedMesh;
             if (THIS.active3D != currentMesh)

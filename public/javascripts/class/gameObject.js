@@ -51,9 +51,10 @@ function GameObject()
         redMaterial.diffuseColor = BABYLON.Color3.FromInts(255, 50, 0);
         materials.push(redMaterial);
 
-        ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "images/MultiplayerWorld.jpg", 8000, 8000, 50, 0, 1200, scene, false);
+        ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "images/MultiplayerWorld.jpg", 8000, 8000, 100, 0, 1200, scene, false);
         ground.position.y-=400;
         var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
+        groundMaterial.wireframe = true;
         ground.material = groundMaterial;
       
         ground.refreshBoundingInfo();

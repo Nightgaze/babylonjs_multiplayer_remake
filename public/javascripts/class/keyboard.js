@@ -1,5 +1,6 @@
-﻿function Keyboard(player, game)
+﻿function Keyboard(player, game, keys)
 {
+    
 
     var keyW = false;
     var keyS = false;

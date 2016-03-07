@@ -28,7 +28,7 @@ nano.db.create('players', function(err, body){
 var props = nano.use('props');
 var players = nano.use('players');
 
-
+//app.get('/orice', function(){});
 //SOCKET.IO
 var utilSocket = io.of('/utilsocket').on('connection', function(socket){
     props.view('design', 'get props', function (err, res){
@@ -79,7 +79,7 @@ var realtimeSocket = io.of('/realtimesocket').on('connection', function (socket)
          });
     });
     socket.on('disconnect', function(data){
-        console.log(socket.name + 'has disconnected.');
+        console.log(socket.name + ' has disconnected.');
         var rev;
         players.view('design', 'get players',{keys: [socket.name]}, function(err, res){  
             try {    

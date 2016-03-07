@@ -29,7 +29,6 @@ function RealtimeSocket(game, name){
     })
 
     sock.on('move player', function(data){
-        console.log(data);
         var p = playerList.Search(data._id);
         if (p) switch (data.type){
             case 'W':

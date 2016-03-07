@@ -79,6 +79,7 @@
     <Folder Include="public\images" />
     <Folder Include="public\javascripts" />
     <Folder Include="public\javascripts\class" />
+    <Folder Include="public\javascripts\class\New folder\" />
     <Folder Include="public\javascripts\dist" />
     <Folder Include="public\javascripts\dist\preview release" />
     <Folder Include="public\javascripts\dist\previous releases" />

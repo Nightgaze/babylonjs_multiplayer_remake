@@ -15,6 +15,7 @@ function Prop(doc, scene) {
         THIS.name = mesh.name;
         mesh._id = doc._id;
         public._id = doc._id;
+        mesh.checkCollisions = true;
     }
     public.update = function(doc){
 
