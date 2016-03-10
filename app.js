@@ -123,7 +123,7 @@ propsFeed.on('change', function (change) { //console.log(change);
 propsFeed.follow();
 
 var playersFeed = players.follow({include_docs: true, feed: "longpoll", since: "now"});
-playersFeed.on('change', function(change){
+playersFeed.on('change', function(change){console.log(change); console.log('\n');
   
     //distinguish
     if (change.doc._deleted) realtimeSocket.emit('remove player', change.doc._id);

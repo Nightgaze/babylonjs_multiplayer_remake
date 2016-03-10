@@ -29,31 +29,37 @@ function RealtimeSocket(game, name){
     })
 
     sock.on('move player', function(data){
-        var p = playerList.Search(data._id);
-        if (p) switch (data.type){
-            case 'W':
-                p.W();
-                break;
-            case 'S':
-                p.S();
-                break;
+        if (name != data._id)
+        {
+            var p = playerList.Search(data._id);
+            if (p) switch (data.type){
+                case 'W':
+                    p.W();
+                    break;
+                case 'S':
+                    p.S();
+                    break;
 
+            }
+            //props.Search(data._id);    
         }
-        //props.Search(data._id);    
     });
 
     sock.on('stop player', function(data){
-        var p = playerList.Search(data._id);
-        if (p) switch (data.type){
-            case 'W':
-                p.WC();
-                break;
-            case 'S':
-                p.SC();
-                break;
+        if (name != data._id)
+        {
+            var p = playerList.Search(data._id);
+            if (p) switch (data.type){
+                case 'W':
+                    p.WC();
+                    break;
+                case 'S':
+                    p.SC();
+                    break;
 
+            }
+            props.Search(data.id)    
         }
-        props.Search(data.id)    
     });
     sock.on('camera data', function(data){
        var p = playerList.Search(data._id);

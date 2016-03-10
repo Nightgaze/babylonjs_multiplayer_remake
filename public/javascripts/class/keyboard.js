@@ -17,7 +17,7 @@
             case 87:
                 if (!keyW)      //W
                 {
-                    //player.W();
+                    player.W();
                     socket.emit('move player', {_id: player._id, type: 'W'});
                     keyW = true;
                 }
@@ -26,7 +26,7 @@
             case 83:
                 if (!keyS)      //S
                 {
-                    //player.S();
+                    player.S();
                     socket.emit('move player', { _id: player._id, type: 'S'});
                     keyS = true;
                 }
@@ -43,7 +43,7 @@
             case 87:        //W
                 if(keyW)
                 {
-                    //player.WC();
+                    player.WC();
                     var data = player.getPlayerData();
                     data.type = 'W';
                     socket.emit('stop player', data);
@@ -55,6 +55,7 @@
             case 83:
                 if (keyS)   //S
                 {
+                    player.SC();
                     var data = player.getPlayerData();
                     data.type = 'S';
                     socket.emit('stop player', data);
