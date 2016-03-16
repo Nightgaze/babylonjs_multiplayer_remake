@@ -4,10 +4,10 @@ function GameObject()
     var isConnected = false;
     var canvas, engine, scene, camera,
     light,
-    models = [], materials = [], name;
-    var realtimeSocket, utilSocket;
+    models = [], materials = [];
+    var name, realtimeSocket, utilSocket;
     var modelSelector;
-    var props = new List(), playerList = new List();
+    var props = new List(), playerList = new List(), creatures = new List();
     
 
     var createScene = function()
@@ -60,8 +60,11 @@ function GameObject()
         ground.refreshBoundingInfo();
         computeWorldInverse(ground);
 
-        
-    }
+       for (var i=0; i<2; i++){
+            var n = new NPC(new PlayerData("NPC" + i,  new BABYLON.Vector3(0, 100 , i * 100 + 15),  1.2,       false,    1,       1.2), public, creatures);
+            creatures.Push(n);
+            }
+       }
 
     
     var computeWorldInverse = function (mesh)
@@ -113,6 +116,7 @@ function GameObject()
         return props;    
     }
 
+    public.getCreatures = function(){return creatures;}
     
     public.connect = function (){
         if (!isConnected){                //name, pos, tranSpeed, canFly, flySpeed, rotSpeed, model
@@ -135,7 +139,7 @@ function GameObject()
     public.getModelselector = function(){
         return modelSelector;    
     }
-    public.test = function(){return 'test'}
+    
     return public;
  }
  

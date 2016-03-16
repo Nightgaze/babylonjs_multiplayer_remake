@@ -11,6 +11,7 @@ function Player(playerData, game, mine)
     var _id = playerData._id;
     this._id = playerData._id;
     public._id = playerData._id;
+    
 
     if (mine) var keyboard = new Keyboard(public, game);
     var root = scene.getMeshByName("sphere").clone();
@@ -38,6 +39,7 @@ function Player(playerData, game, mine)
     public.getMesh = function(){
         return private.mesh; 
     }
+    public.mesh = private.mesh;
     public.getCamera = function(){
         return private.camera;    
     }

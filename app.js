@@ -18,6 +18,10 @@ var PlayerData = require('./public/javascripts/class/playerdata.js');
 
 //DB:
 var nano = require('nano')(DATABASE);
+nano.db.get('players', function (err, body){
+    if (!err) console.log(body);
+    else console.log(err);    
+});
 /*nano.db.create('props', function(err, body){
     if (!err) console.log(body);    
 });
@@ -34,6 +38,7 @@ var utilSocket = io.of('/utilsocket').on('connection', function(socket){
     props.view('design', 'get props', function (err, res){
         if (res.rows.length != 0)
             socket.emit('load props', res);
+        
     });
 
 
@@ -175,6 +180,7 @@ if (app.get('env') === 'development') {
       message: err.message,
       error: err
     });
+    
   });
 }
 

@@ -21,11 +21,24 @@ Open source projects used in the developing of this:
 * [babylon.js] - Javascript WebGL engine
 
 ## To run this:
-You require node.js installed and also couchDB installed with a database named 'props' and a temporary view named "get props" with the code: 
+You require node.js installed and also couchDB installed with 2 databases named 'props' and 'players' and 2 temporary views named "get props" with the code: 
 
 ```sh
 function(doc) {
+  if (doc.model)
   emit(doc._id, doc);
+}
+```
+write this in Terminal:
+```sh
+$ node app.js
+```
+
+and 'get players':
+```sh
+function(doc) {
+  if (doc.model)
+    emit(doc._id, doc);
 }
 ```
 write this in Terminal:

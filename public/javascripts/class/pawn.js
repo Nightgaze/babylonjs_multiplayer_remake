@@ -1,15 +1,16 @@
 ﻿function Pawn(pawnData, game)
 {
     
-    var public = {};
     var engine = game.getEngine();
     var canvas = engine.getRenderingCanvas();
     var scene = game.getScene();
 
+    var public = {};
     public.position = new BABYLON.Vector3(pawnData.position.x, pawnData.position.y, pawnData.position.z);
     var private = Object3D.call(this, game, public.position, "box");
+
     public.mesh = private.mesh;
-    public.camera = {alpha: 1, beta: 1};
+    public.camera = {alpha: 0, beta: 0};
     public.rotation = private.rotation;
     public.tranSpeed = pawnData.tranSpeed;
     public.flySpeed = pawnData.flySpeed;
@@ -144,6 +145,9 @@
     {
         private.mesh.dispose();
         delete THIS;    
+    }
+    public.getMesh = function(){
+        return private.mesh;    
     }
 
     return public;
